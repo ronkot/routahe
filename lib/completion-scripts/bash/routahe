@@ -1,0 +1,11 @@
+_routahe() {
+  local cur prev opts
+  cur=$2
+  prev=$3
+  opts=$(routahe --history)
+  local IFS=$'\n'
+  COMPREPLY=( $(echo "$opts" | grep -i "^$cur" | sed -e 's/ /\\ /g') )
+  return 0
+}
+
+complete -F _routahe routahe
