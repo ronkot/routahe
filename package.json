@@ -21,7 +21,8 @@
     "coverage": "jest src/** --coverage",
     "compile": "babel --presets es2015 -d lib/ src/",
     "eslint": "eslint .",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "postinstall": "install-completion bash lib/completion-scripts/bash/routahe"
   },
   "bin": {
     "routahe": "./index.js"
@@ -38,6 +39,7 @@
     "moment-duration-format": "^1.3.0",
     "node-emoji": "^1.4.1",
     "node-fetch": "^1.6.3",
+    "shell-completion": "0.0.5",
     "wifi-triangulate": "^1.1.2"
   },
   "devDependencies": {
