@@ -1,11 +1,15 @@
 import Moment from 'moment'
-import {assignIn} from 'lodash'
+import {assignIn, includes} from 'lodash'
 
 exports.parseArguments = (args) => {
-  const {isTime, isDate, mapAddresses, parseDateTime, isHelp} = exports
+  const {isTime, isDate, mapAddresses, parseDateTime, isHelp, isTop, isLatest, isUnknownCommand} = exports
   const options = args.reduce((opts, arg) => {
-    if (arg && isHelp(arg)) {
+    if (arg && isUnknownCommand(arg) || isHelp(arg)) {
       opts.help = true
+    } else if (arg && isTop(arg)) {
+      opts.top = true
+    } else if (arg && isLatest(arg)) {
+      opts.latest = true
     } else if (arg &&isTime(arg)) {
       opts.arriveBy = arg.startsWith('@')
       opts.time = arg.replace('@', '')
@@ -34,7 +38,7 @@ exports.mapAddresses = (options) => {
     opts.addressTo = address2
   } else if (address1) {
     opts.addressTo = address1
-  } else {
+  } else if (!(opts.top || opts.latest)) {
     opts.help = true
   }
   delete opts.address1
@@ -63,4 +67,16 @@ exports.isDate = (arg) => {
 
 exports.isHelp = (arg) => {
   return arg === '--help'
+}
+
+exports.isTop = (arg) => {
+  return arg === '--top'
+}
+
+exports.isLatest = (arg) => {
+  return arg === '--latest'
+}
+
+exports.isUnknownCommand = (arg) => {
+  return arg.startsWith('--') && !includes(['--top', '--latest', '--help'], arg)
 }

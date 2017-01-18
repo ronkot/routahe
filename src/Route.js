@@ -4,8 +4,17 @@ import {getLocation} from './location/location'
 import {printSearchInfo, printRoutes} from './view/view'
 import history from './history'
 
+exports.getAddresses = async (opts) => {
+  const {from, to} = opts.top
+    ? await history.topRoute()
+    : opts.latest
+      ? await history.latestRoute()
+      : { from: opts.addressFrom, to: opts.addressTo }
+  return Promise.all([getLocation(from), getLocation(to)])
+}
+
 exports.action = async (opts) => {
-  const [fromLocation, toLocation] = await Promise.all([getLocation(opts.addressFrom), getLocation(opts.addressTo)])
+  const [fromLocation, toLocation] = await exports.getAddresses(opts)
   history.add(fromLocation.label, toLocation.label)
   await exports.getRoute(fromLocation, toLocation, opts.dateTime, opts.arriveBy)
 }
