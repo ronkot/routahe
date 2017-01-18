@@ -1,9 +1,8 @@
-import program from 'commander'
 import {action} from './route'
 import {parseArguments} from './argumentParser'
 import {gray} from 'chalk'
 
-program.on('--help', function() {
+const printHelp = () => {
   console.log('  Examples:')
   console.log('')
   console.log(gray('    Default from - to usage'))
@@ -21,12 +20,19 @@ program.on('--help', function() {
   console.log(gray('    Specify date with time'))
   console.log('    $ routahe kamppi pasila 12:30 24.12.2016')
   console.log('')
-})
+}
 
-program
-  .arguments('<arg1> [arg2] [arg3] [arg4]')
-  .action((arg1, arg2, arg3, arg4) => action(parseArguments([arg1, arg2, arg3, arg4])).catch(e => {
-    console.log('Error with action', e)
-  }))
-  .parse(process.argv)
+const execute = async (program) => {
+	try {
+		program()
+	} catch (e) {
+		console.log('Error with action:', e)
+	}
+}
 
+const args = process.argv.slice(2)
+const opts = parseArguments(args)
+const program = opts.help
+	? printHelp
+	: action.bind(null, opts)
+execute(program)
