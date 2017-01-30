@@ -32,6 +32,18 @@ Specify date with time
 routahe kamppi "kannistontie 2, vantaa" 5:30 24.12.2016
 ```
 
+Use addresses from the latest route
+```bash
+routahe --latest
+```
+
+Use addresses from the most used route
+```bash
+routahe --top
+```
+
+Tab completion is enabled for addresses in search history (currently bash only).
+
 ![Usage](https://raw.githubusercontent.com/anttikon/routahe/master/misc/routahe.gif)
 
 ## Develop

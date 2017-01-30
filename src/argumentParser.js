@@ -1,15 +1,19 @@
 import Moment from 'moment'
 import {assignIn, includes} from 'lodash'
 
-exports.parseArguments = (args) => {
-  const {isTime, isDate, mapAddresses, parseDateTime, isHelp, isTop, isLatest, isUnknownCommand} = exports
+const parseArguments = (args) => {
   const options = args.reduce((opts, arg) => {
-    if (arg && isUnknownCommand(arg) || isHelp(arg)) {
+    if (arg && isUnknownCommand(arg)) {
       opts.help = true
-    } else if (arg && isTop(arg)) {
+      opts.unknownCommand = arg
+    } else if (arg && isHelpCommand(arg)) {
+      opts.help = true
+    } else if (arg && isTopCommand(arg)) {
       opts.top = true
-    } else if (arg && isLatest(arg)) {
+    } else if (arg && isLatestCommand(arg)) {
       opts.latest = true
+    } else if (arg && isHistoryCommand(arg))  {
+      opts.history = true
     } else if (arg &&isTime(arg)) {
       opts.arriveBy = arg.startsWith('@')
       opts.time = arg.replace('@', '')
@@ -30,7 +34,7 @@ exports.parseArguments = (args) => {
   return mapAddresses(options)
 }
 
-exports.mapAddresses = (options) => {
+const mapAddresses = (options) => {
   const opts = assignIn({}, options)
   const {address1, address2} = opts
   if (address1 && address2) {
@@ -38,8 +42,6 @@ exports.mapAddresses = (options) => {
     opts.addressTo = address2
   } else if (address1) {
     opts.addressTo = address1
-  } else if (!(opts.top || opts.latest)) {
-    opts.help = true
   }
   delete opts.address1
   delete opts.address2
@@ -47,7 +49,7 @@ exports.mapAddresses = (options) => {
 }
 
 
-exports.parseDateTime = (opts) => {
+const parseDateTime = (opts) => {
   const date = opts.date ? Moment(opts.date, ['DD.MM.YYYY', 'DD.MM.', 'DD.MM', 'DD.M.YYYY', 'DD.M.', 'DD.M', 'D.M', 'D.MM', 'D.MM.', 'D.M.YYYY', 'D.MM.YYYY'], true) : new Moment()
   const time = Moment(opts.time, ['HH:mm', 'H:mm'], true)
   if (!time.isValid()) {
@@ -57,26 +59,43 @@ exports.parseDateTime = (opts) => {
   return time
 }
 
-exports.isTime = (arg) => {
+const isTime = (arg) => {
   return !!arg.match(/^@?\d{1,2}:\d{2}$/g)
 }
 
-exports.isDate = (arg) => {
+const isDate = (arg) => {
   return !!arg.match(/^\d{1,2}\.\d{1,2}\.?(\d{4})?$/g)
 }
 
-exports.isHelp = (arg) => {
+const isHelpCommand = (arg) => {
   return arg === '--help'
 }
 
-exports.isTop = (arg) => {
+const isTopCommand = (arg) => {
   return arg === '--top'
 }
 
-exports.isLatest = (arg) => {
+const isLatestCommand = (arg) => {
   return arg === '--latest'
 }
 
-exports.isUnknownCommand = (arg) => {
-  return arg.startsWith('--') && !includes(['--top', '--latest', '--help'], arg)
+const isHistoryCommand = (arg) => {
+  return arg === '--history'
+}
+
+const isUnknownCommand = (arg) => {
+  return arg.startsWith('--') && !includes(['--top', '--latest', '--help', '--history'], arg)
+}
+
+export {
+  parseArguments,
+  mapAddresses,
+  parseDateTime,
+  isTime,
+  isDate,
+  isHelpCommand,
+  isTopCommand,
+  isLatestCommand,
+  isHistoryCommand,
+  isUnknownCommand
 }
