@@ -8,29 +8,27 @@ describe('HSL-API', function() {
 
   it('should be able to get route', async() => {
     const routes = await new RouteQuery().fetch({
-      from: {label: 'Kamppi, Helsinki', lon: 24.931861, lat: 60.169067}, to: {
-        label: 'Kannistontie 2, Vantaa',
-        lon: 24.841085,
-        lat: 60.322768
-      }, date: nextWednesday, arriveBy: false
+      from: { label: 'Kottaraistie 1a, Helsinki', lon: 25.005448, lat: 60.263282 },
+      to:  { label: 'Kottaraistie 4a, Helsinki', lon: 25.004373, lat: 60.263418 },
+      date: nextWednesday,
+      arriveBy: false
     })
 
     const filteredRoutes = routes.map(route => removeRouteTimeAttributes(route))
 
-    expect(filteredRoutes).toMatchSnapshot()
+    expect(filteredRoutes[0]).toMatchSnapshot()  // First route is walk-only
   })
 
   it('should be able to get route with arriveBy', async() => {
     const routes = await new RouteQuery().fetch({
-      from: {label: 'Kamppi, Helsinki', lon: 24.931861, lat: 60.169067}, to: {
-        label: 'Kannistontie 2, Vantaa',
-        lon: 24.841085,
-        lat: 60.322768
-      }, date: nextWednesday, arriveBy: true
+      from: { label: 'Kottaraistie 1a, Helsinki', lon: 25.005448, lat: 60.263282 },
+      to:  { label: 'Kottaraistie 4a, Helsinki', lon: 25.004373, lat: 60.263418 },
+      date: nextWednesday,
+      arriveBy: true
     })
 
     const filteredRoutes = routes.map(route => removeRouteTimeAttributes(route))
-    expect(filteredRoutes).toMatchSnapshot()
+    expect(filteredRoutes[0]).toMatchSnapshot()
   })
 
   function removeRouteTimeAttributes(route) {
