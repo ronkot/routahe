@@ -13,11 +13,12 @@ async function getHslLocations(query) {
 }
 
 async function getLocationByQuery(query) {
-  const hslLocations = await getHslLocations(query)
-  if (!hslLocations.features) {
-    return {}
+  if (!query) {
+    return null
   }
-  return head(hslLocations.features.map(mapFeature))
+
+  const hslLocations = await getHslLocations(query)
+  return hslLocations.features ? head(hslLocations.features.map(mapFeature)) : null
 
   function mapFeature(feature) {
     const [lon, lat] = feature.geometry.coordinates
