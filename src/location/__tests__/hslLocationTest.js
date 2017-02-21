@@ -1,14 +1,14 @@
-import {getHslLocations} from '../hslLocation'
+import {getLocationByQuery} from '../hslLocation'
 
-describe('location', function() {
+describe('HSL Location', function() {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000
-  it('should fetch location by wifi if query is empty', async() => {
-    const locations = await getHslLocations('Helsingin päärautatieasema')
-    expect(locations.features).toMatchSnapshot()
+  it('should fetch location by given criteria', async() => {
+    const locations = await getLocationByQuery('Helsingin päärautatieasema')
+    expect(locations).toMatchSnapshot()
   })
 
-  it('should return empty array with empyt query', async() => {
-    const locations = await getHslLocations('')
-    expect(locations.features).toEqual([])
+  it('should return empty object if criteria is empty', async() => {
+    const locations = await getLocationByQuery('')
+    expect(locations).toEqual(null)
   })
 })

@@ -33,4 +33,4 @@ function getUrl(api, params) {
 }
 
 
-export {getHslLocations, getLocationByQuery}
+export {getLocationByQuery}
